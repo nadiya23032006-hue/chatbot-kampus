@@ -1,0 +1,10 @@
+streamlit==1.26.0
+fastapi==0.111.0
+uvicorn==0.23.2
+requests==2.32.0
+transformers==4.40.2
+torch==2.9.1
+rich==14.2.0
+markdown-it-py==4.0.0
+pygments==2.19.2
+mdurl==0.1.2
