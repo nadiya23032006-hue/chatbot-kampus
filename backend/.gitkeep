@@ -1,0 +1,25 @@
+# backend/app.py
+from fastapi import FastAPI
+from pydantic import BaseModel
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+app = FastAPI(title="Qwen Chat API")
+
+# Load Qwen model
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen-7B-Chat", trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen-7B-Chat",
+    trust_remote_code=True,
+    device_map="auto"
+)
+
+class Query(BaseModel):
+    message: str
+
+@app.post("/chat")
+def chat(query: Query):
+    inputs = tokenizer(query.message, return_tensors="pt").to("cuda")
+    outputs = model.generate(**inputs, max_new_tokens=200)
+    reply = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return {"reply": reply}
